@@ -16,7 +16,9 @@ library TickBitmap {
         pure
         returns (int16 wordPos, uint8 bitPos)
     {
+        // 获取tick在哪个word
         wordPos = int16(tick >> 8);
+        // 获取tick的偏移量
         bitPos = uint8(uint24(tick % 256));
     }
 
@@ -32,6 +34,7 @@ library TickBitmap {
         require(tick % tickSpacing == 0); // ensure that the tick is spaced
         (int16 wordPos, uint8 bitPos) = position(tick / tickSpacing);
         uint256 mask = 1 << bitPos;
+        // 创建一个蒙版，对应的256位比特位，按tick在word中的偏移量bitPos置位1，表示该位置由流动性
         self[wordPos] ^= mask;
     }
 
@@ -51,7 +54,7 @@ library TickBitmap {
     ) internal view returns (int24 next, bool initialized) {
         int24 compressed = tick / tickSpacing;
         if (tick < 0 && tick % tickSpacing != 0) compressed--; // round towards negative infinity
-
+        //  小于方向，往右找
         if (lte) {
             (int16 wordPos, uint8 bitPos) = position(compressed);
             // all the 1s at or to the right of the current bitPos
@@ -68,6 +71,7 @@ library TickBitmap {
                     )) * tickSpacing
                 : (compressed - int24(uint24(bitPos))) * tickSpacing;
         } else {
+            // 往大于方向找，往左找
             // start from the word of the next tick, since the current tick state doesn't matter
             (int16 wordPos, uint8 bitPos) = position(compressed + 1);
             // all the 1s at or to the left of the bitPos
