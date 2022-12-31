@@ -11,6 +11,7 @@ library BitMath {
     /// @param x the value for which to compute the most significant bit, must be greater than 0
     /// @return r the index of the most significant bit
     function mostSignificantBit(uint256 x) internal pure returns (uint8 r) {
+        // 使用二分法找到最大有效位
         require(x > 0);
 
         if (x >= 0x100000000000000000000000000000000) {
