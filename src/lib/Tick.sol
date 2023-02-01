@@ -38,8 +38,8 @@ library Tick {
 
         if (liquidityBefore == 0) {
             tickInfo.initialized = true;
-            // 只有当tick小于current的时候才初始化,也就是当现价在价格区间内
-            // 如果现价不在价格区间内，费用追踪器被设计为0，并且会在下一次这个tick被穿过时进行更新，也就是cross的时候才更新
+            // 只有当tick小于current的时候才初始化,也就是当现价大于tick的价格时。
+            // 如果tick大于现价，费用追踪器被设计为0，并且会在下一次这个tick被穿过时进行更新，也就是cross的时候才更新
             if (tick <= currentTick) {
                 tickInfo.feeGrowthOutside0X128 = feeGrowthGlobal0X128;
                 tickInfo.feeGrowthOutside1X128 = feeGrowthGlobal1X128;
